@@ -1,4 +1,4 @@
-package io.github.yuwenlongpanda.serve.service;
+package io.github.yuwenlongpanda.server.service;
 
 public interface HelloService {
     String sayHello(String name);

@@ -6,7 +6,7 @@ import io.github.yuwenlongpanda.message.RpcResponseMessage;
 import io.github.yuwenlongpanda.protocol.MessageCodecSharable;
 import io.github.yuwenlongpanda.protocol.ProcotolFrameDecoder;
 import io.github.yuwenlongpanda.protocol.SequenceIdGenerator;
-import io.github.yuwenlongpanda.serve.service.HelloService;
+import io.github.yuwenlongpanda.server.service.HelloService;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -27,8 +27,8 @@ public class RpcClientManager {
     public static void main(String[] args) {
         HelloService service = getProxyService(HelloService.class);
         System.out.println(service.sayHello("zhangsan"));
-        System.out.println(service.sayHello("lisi"));
-        System.out.println(service.sayHello("wangwu"));
+//        System.out.println(service.sayHello("lisi"));
+//        System.out.println(service.sayHello("wangwu"));
     }
 
     // 创建代理类

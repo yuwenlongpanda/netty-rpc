@@ -1,4 +1,4 @@
-package io.github.yuwenlongpanda.serve.service;
+package io.github.yuwenlongpanda.server.service;
 
 import io.github.yuwenlongpanda.config.Config;
 

@@ -1,5 +1,6 @@
 package io.github.yuwenlongpanda.protocol;
 
+import io.github.yuwenlongpanda.common.constants.RpcConstants;
 import io.github.yuwenlongpanda.config.Config;
 import io.github.yuwenlongpanda.message.Message;
 import io.netty.buffer.ByteBuf;
@@ -17,35 +18,35 @@ import java.util.List;
  */
 public class MessageCodecSharable extends MessageToMessageCodec<ByteBuf, Message> {
     @Override
-    public void encode(ChannelHandlerContext ctx, Message msg, List<Object> outList) throws Exception {
+    public void encode(ChannelHandlerContext ctx, Message msg, List<Object> outList) {
         ByteBuf out = ctx.alloc().buffer();
-        // 1. 4 字节的魔数
-        out.writeBytes(new byte[]{1, 2, 3, 4});
-        // 2. 1 字节的版本,
-        out.writeByte(1);
-        // 3. 1 字节的序列化方式 jdk 0 , json 1
+        // 魔法数（4 字节）
+        out.writeBytes(RpcConstants.MAGIC_NUMBER);
+        // 协议版本号（1 字节）
+        out.writeByte(RpcConstants.VERSION);
+        // 序列化方式 jdk 0 , json 1, protobuf 2（1 字节）
         out.writeByte(Config.getSerializerAlgorithm().ordinal());
-        // 4. 1 字节的指令类型
+        // 请求类型（1 字节）
         out.writeByte(msg.getMessageType());
-        // 5. 4 个字节
+        // 请求序号（4 个字节）
         out.writeInt(msg.getSequenceId());
         // 无意义，对齐填充
-        out.writeByte(0xff);
-        // 6. 获取内容的字节数组
+        out.writeByte(0);
+        // 获取内容的字节数组
         byte[] bytes = Config.getSerializerAlgorithm().serialize(msg);
-        // 7. 长度
+        // 消息长度（4 个字节）
         out.writeInt(bytes.length);
-        // 8. 写入内容
+        // 消息内容（内容）
         out.writeBytes(bytes);
         outList.add(out);
     }
 
     @Override
-    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
         int magicNum = in.readInt();
         byte version = in.readByte();
-        byte serializerAlgorithm = in.readByte(); // 0 或 1
-        byte messageType = in.readByte(); // 0,1,2...
+        byte codeType = in.readByte();
+        byte messageType = in.readByte();
         int sequenceId = in.readInt();
         in.readByte();
         int length = in.readInt();
@@ -53,12 +54,10 @@ public class MessageCodecSharable extends MessageToMessageCodec<ByteBuf, Message
         in.readBytes(bytes, 0, length);
 
         // 找到反序列化算法
-        Serializer.Algorithm algorithm = Serializer.Algorithm.values()[serializerAlgorithm];
+        Serializer.Algorithm algorithm = Serializer.Algorithm.values()[codeType];
         // 确定具体消息类型
         Class<? extends Message> messageClass = Message.getMessageClass(messageType);
         Message message = algorithm.deserialize(messageClass, bytes);
-//        log.debug("{}, {}, {}, {}, {}, {}", magicNum, version, serializerType, messageType, sequenceId, length);
-//        log.debug("{}", message);
         out.add(message);
     }
 

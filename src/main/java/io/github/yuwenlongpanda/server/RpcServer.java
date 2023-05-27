@@ -1,8 +1,8 @@
-package io.github.yuwenlongpanda.serve;
+package io.github.yuwenlongpanda.server;
 
 import io.github.yuwenlongpanda.protocol.MessageCodecSharable;
 import io.github.yuwenlongpanda.protocol.ProcotolFrameDecoder;
-import io.github.yuwenlongpanda.serve.handler.RpcRequestMessageHandler;
+import io.github.yuwenlongpanda.server.handler.RpcRequestMessageHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;

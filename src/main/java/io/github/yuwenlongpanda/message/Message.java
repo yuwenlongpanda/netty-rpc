@@ -1,5 +1,6 @@
 package io.github.yuwenlongpanda.message;
 
+import io.github.yuwenlongpanda.common.constants.RpcConstants;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -25,20 +26,11 @@ public abstract class Message implements Serializable {
 
     public abstract int getMessageType();
 
-    /**
-     * 请求类型 byte 值
-     */
-    public static final int RPC_MESSAGE_TYPE_REQUEST = 101;
-    /**
-     * 响应类型 byte 值
-     */
-    public static final int RPC_MESSAGE_TYPE_RESPONSE = 102;
-
     private static final Map<Integer, Class<? extends Message>> messageClasses = new HashMap<>();
 
     static {
-        messageClasses.put(RPC_MESSAGE_TYPE_REQUEST, RpcRequestMessage.class);
-        messageClasses.put(RPC_MESSAGE_TYPE_RESPONSE, RpcResponseMessage.class);
+        messageClasses.put(RpcConstants.REQUEST_TYPE, RpcRequestMessage.class);
+        messageClasses.put(RpcConstants.RESPONSE_TYPE, RpcResponseMessage.class);
     }
 
 }

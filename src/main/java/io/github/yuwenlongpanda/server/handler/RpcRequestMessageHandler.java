@@ -1,9 +1,9 @@
-package io.github.yuwenlongpanda.serve.handler;
+package io.github.yuwenlongpanda.server.handler;
 
 import io.github.yuwenlongpanda.message.RpcRequestMessage;
 import io.github.yuwenlongpanda.message.RpcResponseMessage;
-import io.github.yuwenlongpanda.serve.service.HelloService;
-import io.github.yuwenlongpanda.serve.service.ServicesFactory;
+import io.github.yuwenlongpanda.server.service.HelloService;
+import io.github.yuwenlongpanda.server.service.ServicesFactory;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;

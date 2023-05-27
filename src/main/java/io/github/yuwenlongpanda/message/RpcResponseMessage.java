@@ -1,5 +1,6 @@
 package io.github.yuwenlongpanda.message;
 
+import io.github.yuwenlongpanda.common.constants.RpcConstants;
 import lombok.Data;
 import lombok.ToString;
 
@@ -20,6 +21,6 @@ public class RpcResponseMessage extends Message {
 
     @Override
     public int getMessageType() {
-        return RPC_MESSAGE_TYPE_RESPONSE;
+        return RpcConstants.RESPONSE_TYPE;
     }
 }
