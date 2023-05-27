@@ -1,4 +1,4 @@
-package io.github.yuwenlongpanda.protocol;
+package io.github.yuwenlongpanda.common;
 
 import com.google.gson.*;
 

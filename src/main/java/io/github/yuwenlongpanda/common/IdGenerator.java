@@ -1,8 +1,8 @@
-package io.github.yuwenlongpanda.protocol;
+package io.github.yuwenlongpanda.common;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class SequenceIdGenerator {
+public abstract class IdGenerator {
     private static final AtomicInteger id = new AtomicInteger();
 
     public static int nextId() {

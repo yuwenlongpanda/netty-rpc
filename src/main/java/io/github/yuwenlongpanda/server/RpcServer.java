@@ -1,8 +1,8 @@
 package io.github.yuwenlongpanda.server;
 
-import io.github.yuwenlongpanda.protocol.MessageCodecSharable;
-import io.github.yuwenlongpanda.protocol.ProcotolFrameDecoder;
-import io.github.yuwenlongpanda.server.handler.RpcRequestMessageHandler;
+import io.github.yuwenlongpanda.protocol.RpcCodec;
+import io.github.yuwenlongpanda.protocol.ProtocolDecoder;
+import io.github.yuwenlongpanda.server.handler.ServerHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -26,10 +26,10 @@ public class RpcServer {
             serverBootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 protected void initChannel(SocketChannel ch) throws Exception {
-                    ch.pipeline().addLast(new ProcotolFrameDecoder());
+                    ch.pipeline().addLast(new ProtocolDecoder());
                     ch.pipeline().addLast(new LoggingHandler(LogLevel.DEBUG));
-                    ch.pipeline().addLast(new MessageCodecSharable());
-                    ch.pipeline().addLast(new RpcRequestMessageHandler());
+                    ch.pipeline().addLast(new RpcCodec());
+                    ch.pipeline().addLast(new ServerHandler());
                 }
             });
             Channel channel = serverBootstrap.bind(8080).sync().channel();

@@ -1,7 +1,7 @@
 package io.github.yuwenlongpanda.server.handler;
 
-import io.github.yuwenlongpanda.message.RpcRequestMessage;
-import io.github.yuwenlongpanda.message.RpcResponseMessage;
+import io.github.yuwenlongpanda.pojo.RpcRequest;
+import io.github.yuwenlongpanda.pojo.RpcResponse;
 import io.github.yuwenlongpanda.server.service.HelloService;
 import io.github.yuwenlongpanda.server.service.ServicesFactory;
 import io.netty.channel.ChannelHandler;
@@ -14,11 +14,11 @@ import java.lang.reflect.Method;
 
 @Slf4j
 @ChannelHandler.Sharable
-public class RpcRequestMessageHandler extends SimpleChannelInboundHandler<RpcRequestMessage> {
+public class ServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, RpcRequestMessage message) {
-        RpcResponseMessage response = new RpcResponseMessage();
+    protected void channelRead0(ChannelHandlerContext ctx, RpcRequest message) {
+        RpcResponse response = new RpcResponse();
         response.setSequenceId(message.getSequenceId());
         try {
             HelloService service = (HelloService)
@@ -35,7 +35,7 @@ public class RpcRequestMessageHandler extends SimpleChannelInboundHandler<RpcReq
     }
 
     public static void main(String[] args) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        RpcRequestMessage message = new RpcRequestMessage(
+        RpcRequest message = new RpcRequest(
                 1,
                 "io.github.yuwenlongpanda.serve.service.HelloService",
                 "sayHello",

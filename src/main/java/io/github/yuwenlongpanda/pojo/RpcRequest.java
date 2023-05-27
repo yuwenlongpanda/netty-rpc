@@ -1,4 +1,4 @@
-package io.github.yuwenlongpanda.message;
+package io.github.yuwenlongpanda.pojo;
 
 import io.github.yuwenlongpanda.common.constants.RpcConstants;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.ToString;
  */
 @Getter
 @ToString(callSuper = true)
-public class RpcRequestMessage extends Message {
+public class RpcRequest extends RpcMeta {
 
     /**
      * 调用的接口全限定名，服务端根据它找到实现
@@ -32,7 +32,7 @@ public class RpcRequestMessage extends Message {
      */
     private Object[] parameterValue;
 
-    public RpcRequestMessage(int sequenceId, String interfaceName, String methodName, Class<?> returnType, Class[] parameterTypes, Object[] parameterValue) {
+    public RpcRequest(int sequenceId, String interfaceName, String methodName, Class<?> returnType, Class[] parameterTypes, Object[] parameterValue) {
         super.setSequenceId(sequenceId);
         this.interfaceName = interfaceName;
         this.methodName = methodName;

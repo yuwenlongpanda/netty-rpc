@@ -1,8 +1,9 @@
 package io.github.yuwenlongpanda.protocol;
 
+import io.github.yuwenlongpanda.common.Serializer;
 import io.github.yuwenlongpanda.common.constants.RpcConstants;
-import io.github.yuwenlongpanda.config.Config;
-import io.github.yuwenlongpanda.message.Message;
+import io.github.yuwenlongpanda.common.constants.config.Config;
+import io.github.yuwenlongpanda.pojo.RpcMeta;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -16,9 +17,9 @@ import java.util.List;
 /**
  * 必须和 LengthFieldBasedFrameDecoder 一起使用，确保接到的 ByteBuf 消息是完整的
  */
-public class MessageCodecSharable extends MessageToMessageCodec<ByteBuf, Message> {
+public class RpcCodec extends MessageToMessageCodec<ByteBuf, RpcMeta> {
     @Override
-    public void encode(ChannelHandlerContext ctx, Message msg, List<Object> outList) {
+    public void encode(ChannelHandlerContext ctx, RpcMeta msg, List<Object> outList) {
         ByteBuf out = ctx.alloc().buffer();
         // 魔法数（4 字节）
         out.writeBytes(RpcConstants.MAGIC_NUMBER);
@@ -56,8 +57,8 @@ public class MessageCodecSharable extends MessageToMessageCodec<ByteBuf, Message
         // 找到反序列化算法
         Serializer.Algorithm algorithm = Serializer.Algorithm.values()[codeType];
         // 确定具体消息类型
-        Class<? extends Message> messageClass = Message.getMessageClass(messageType);
-        Message message = algorithm.deserialize(messageClass, bytes);
+        Class<? extends RpcMeta> messageClass = RpcMeta.getMessageClass(messageType);
+        RpcMeta message = algorithm.deserialize(messageClass, bytes);
         out.add(message);
     }
 

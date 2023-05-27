@@ -1,4 +1,4 @@
-package io.github.yuwenlongpanda.message;
+package io.github.yuwenlongpanda.pojo;
 
 import io.github.yuwenlongpanda.common.constants.RpcConstants;
 import lombok.Data;
@@ -9,7 +9,7 @@ import lombok.ToString;
  */
 @Data
 @ToString(callSuper = true)
-public class RpcResponseMessage extends Message {
+public class RpcResponse extends RpcMeta {
     /**
      * 返回值
      */
