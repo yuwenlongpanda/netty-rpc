@@ -1,4 +1,4 @@
-package io.github.yuwenlongpanda.common.constants.config;
+package io.github.yuwenlongpanda.common.config;
 
 
 import io.github.yuwenlongpanda.common.Serializer;

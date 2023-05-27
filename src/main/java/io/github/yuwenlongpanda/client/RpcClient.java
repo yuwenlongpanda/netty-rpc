@@ -1,11 +1,11 @@
 package io.github.yuwenlongpanda.client;
 
 import io.github.yuwenlongpanda.client.handler.ClientHandler;
+import io.github.yuwenlongpanda.common.IdGenerator;
 import io.github.yuwenlongpanda.pojo.RpcRequest;
 import io.github.yuwenlongpanda.pojo.RpcResponse;
-import io.github.yuwenlongpanda.protocol.RpcCodec;
 import io.github.yuwenlongpanda.protocol.ProtocolDecoder;
-import io.github.yuwenlongpanda.common.IdGenerator;
+import io.github.yuwenlongpanda.protocol.RpcCodec;
 import io.github.yuwenlongpanda.server.service.HelloService;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -23,20 +23,17 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 public class RpcClient {
 
-
     public static void main(String[] args) {
         HelloService service = getProxyService(HelloService.class);
         System.out.println(service.sayHello("zhangsan"));
-//        System.out.println(service.sayHello("lisi"));
-//        System.out.println(service.sayHello("wangwu"));
     }
 
     // 创建代理类
     public static <T> T getProxyService(Class<T> serviceClass) {
         ClassLoader loader = serviceClass.getClassLoader();
         Class<?>[] interfaces = new Class[]{serviceClass};
-        //                                                            sayHello  "张三"
         Object o = Proxy.newProxyInstance(loader, interfaces, (proxy, method, args) -> {
+
             // 1. 将方法调用转换为 消息对象
             int sequenceId = IdGenerator.nextId();
             RpcRequest msg = new RpcRequest(
@@ -47,16 +44,13 @@ public class RpcClient {
                     method.getParameterTypes(),
                     args
             );
+
             // 2. 将消息对象发送出去
             getChannel().writeAndFlush(msg);
 
-            // 3. 准备一个空 future 对象，来接收结果             指定 future 对象异步接收结果线程
+            // 3. 准备一个空 future 对象，来接收结果；指定 future 对象异步接收结果线程
             CompletableFuture<RpcResponse> future = new CompletableFuture<>();
             ClientHandler.FUTURE.put(sequenceId, future);
-
-//            future.addListener(future -> {
-//                // 线程
-//            });
 
             // 4. 等待 future 结果
             RpcResponse response = future.get();
@@ -97,8 +91,8 @@ public class RpcClient {
         bootstrap.handler(new ChannelInitializer<SocketChannel>() {
             @Override
             protected void initChannel(SocketChannel ch) throws Exception {
+                ch.pipeline().addLast(new LoggingHandler(LogLevel.INFO));
                 ch.pipeline().addLast(new ProtocolDecoder());
-                ch.pipeline().addLast(new LoggingHandler(LogLevel.DEBUG));
                 ch.pipeline().addLast(new RpcCodec());
                 ch.pipeline().addLast(new ClientHandler());
             }

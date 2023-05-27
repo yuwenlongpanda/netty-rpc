@@ -18,8 +18,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<RpcResponse> {
     public static final Map<Integer, CompletableFuture<RpcResponse>> FUTURE = new ConcurrentHashMap<>();
 
     @Override
-
-    protected void channelRead0(ChannelHandlerContext ctx, RpcResponse msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, RpcResponse msg) {
         log.debug("{}", msg);
         // 拿到空的 future
         CompletableFuture<RpcResponse> future = FUTURE.remove(msg.getSequenceId());

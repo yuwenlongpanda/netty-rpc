@@ -1,8 +1,8 @@
 package io.github.yuwenlongpanda.protocol;
 
 import io.github.yuwenlongpanda.common.Serializer;
+import io.github.yuwenlongpanda.common.config.Config;
 import io.github.yuwenlongpanda.common.constants.RpcConstants;
-import io.github.yuwenlongpanda.common.constants.config.Config;
 import io.github.yuwenlongpanda.pojo.RpcMeta;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
