@@ -2,6 +2,7 @@ package io.github.yuwenlongpanda.client;
 
 import io.github.yuwenlongpanda.client.handler.RpcResponseMessageHandler;
 import io.github.yuwenlongpanda.message.RpcRequestMessage;
+import io.github.yuwenlongpanda.message.RpcResponseMessage;
 import io.github.yuwenlongpanda.protocol.MessageCodecSharable;
 import io.github.yuwenlongpanda.protocol.ProcotolFrameDecoder;
 import io.github.yuwenlongpanda.protocol.SequenceIdGenerator;
@@ -14,10 +15,10 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import io.netty.util.concurrent.DefaultPromise;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Proxy;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 public class RpcClientManager {
@@ -26,8 +27,8 @@ public class RpcClientManager {
     public static void main(String[] args) {
         HelloService service = getProxyService(HelloService.class);
         System.out.println(service.sayHello("zhangsan"));
-//        System.out.println(service.sayHello("lisi"));
-//        System.out.println(service.sayHello("wangwu"));
+        System.out.println(service.sayHello("lisi"));
+        System.out.println(service.sayHello("wangwu"));
     }
 
     // 创建代理类
@@ -49,22 +50,22 @@ public class RpcClientManager {
             // 2. 将消息对象发送出去
             getChannel().writeAndFlush(msg);
 
-            // 3. 准备一个空 Promise 对象，来接收结果             指定 promise 对象异步接收结果线程
-            DefaultPromise<Object> promise = new DefaultPromise<>(getChannel().eventLoop());
-            RpcResponseMessageHandler.PROMISES.put(sequenceId, promise);
+            // 3. 准备一个空 future 对象，来接收结果             指定 future 对象异步接收结果线程
+            CompletableFuture<RpcResponseMessage> future = new CompletableFuture<>();
+            RpcResponseMessageHandler.FUTURE.put(sequenceId, future);
 
-//            promise.addListener(future -> {
+//            future.addListener(future -> {
 //                // 线程
 //            });
 
-            // 4. 等待 promise 结果
-            promise.await();
-            if (promise.isSuccess()) {
+            // 4. 等待 future 结果
+            RpcResponseMessage response = future.get();
+            if (response.getReturnValue() != null) {
                 // 调用正常
-                return promise.getNow();
+                return response.getReturnValue();
             } else {
                 // 调用失败
-                throw new RuntimeException(promise.cause());
+                throw new RuntimeException(response.getExceptionValue());
             }
         });
         return (T) o;
